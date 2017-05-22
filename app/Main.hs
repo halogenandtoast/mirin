@@ -20,6 +20,7 @@ import System.Environment (lookupEnv)
 import Network.Wai.Internal (Request, requestHeaderHost)
 import Data.ByteString (ByteString)
 import Data.Maybe (fromMaybe)
+import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Yaml.Config (loadYamlSettings, useEnv)
 import Database.Persist.TH
@@ -93,10 +94,10 @@ app = do
         settings <- getState
         req <- request
         provider <- runSQL $ getProvider req
-        redirect $ T.concat [appBase settings, provider]
+        redirect $ appBase settings <> provider
     get wildcard $ \path -> do
         settings <- getState
         mredirection <- runSQL $ selectFirst [RedirectOriginalPath ==. path] []
         case mredirection of
              Nothing -> redirect $ appBase settings
-             Just (Entity _ redirection) -> redirect $ T.concat [appBase settings, redirectDestinationPath redirection]
+             Just (Entity _ redirection) -> redirect $ appBase settings <> redirectDestinationPath redirection
