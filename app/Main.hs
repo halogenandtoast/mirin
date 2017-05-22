@@ -12,8 +12,6 @@
 
 module Main where
 
-import Data.Text as T
-
 import Web.Spock
 import Web.Spock.Config
 import System.Environment (lookupEnv)
@@ -21,7 +19,6 @@ import Network.Wai.Internal (Request, requestHeaderHost)
 import Data.ByteString (ByteString)
 import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
-import Data.Text (Text)
 import Data.Yaml.Config (loadYamlSettings, useEnv)
 import Database.Persist.TH
 import Database.Persist hiding (get)
@@ -31,6 +28,7 @@ import Control.Monad.Trans.Reader (ReaderT)
 import Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
 import Control.Monad.IO.Class (liftIO)
 import Data.Text.Encoding (decodeUtf8)
+import Data.Text (Text)
 import Data.Aeson
 import Network.URI
 
