@@ -1,0 +1,33 @@
+name:                mirin
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/halogenandtoast/mirin#readme
+license:             MIT
+license-file:        LICENSE
+author:              Matthew Mongeau
+maintainer:          halogenandtoast@gmail.com
+copyright:           2017 Matthew Mongeau
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+executable mirin
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , Spock >= 0.11
+                     , mtl
+                     , text
+                     , wai
+                     , bytestring
+                     , persistent
+                     , persistent-mysql
+                     , persistent-template
+                     , monad-logger
+                     , transformers
+                     , yaml
+                     , aeson
+                     , network-uri

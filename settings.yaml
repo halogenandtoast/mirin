@@ -1,0 +1,9 @@
+port: "_env:PORT:3000"
+base-url: "_env:URL:https://example.com/"
+database:
+  user: "_env:MSUSER:root"
+  password: "_env:MSPASS:"
+  host: "_env:MSHOST:localhost"
+  port: "_env:MSPORT:3306"
+  database: "_env:MSDATABASE:zhacai_dev"
+  poolsize: "_env:MSPOOLSIZE:5"
