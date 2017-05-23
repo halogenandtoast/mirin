@@ -31,12 +31,12 @@ import Data.Aeson
 import Network.HTTP.Types.Status (status301)
 
 type DB = ReaderT SqlBackend (LoggingT IO)
+type MirinAction ctx a = SpockActionCtx ctx SqlBackend () AppSettings a
 
 data AppSettings = AppSettings { appDatabaseConf :: MySQLConf
                                , appPort :: Int
                                , appBase :: Text
                                }
-
 
 instance FromJSON AppSettings where
     parseJSON = withObject "AppSettings" $ \o -> do
@@ -80,6 +80,13 @@ redirect301 url = do
     setHeader "Location" url
     html $ "<html><body>You are being <a src=\"" <> url <> "\">redirected</a>.</body></html>"
 
+settingsWithProvider :: MirinAction ctx (AppSettings, Text)
+settingsWithProvider = do
+  settings <- getState
+  req <- request
+  provider <- runSQL $ getProvider req
+  return (settings, provider)
+
 main :: IO ()
 main = do
     settings <- liftIO $ loadYamlSettings ["settings.yaml"] [] useEnv
@@ -94,14 +101,10 @@ main = do
 app :: SpockM SqlBackend () AppSettings ()
 app = do
     get root $ do
-        settings <- getState
-        req <- request
-        provider <- runSQL $ getProvider req
+        (settings, provider) <- settingsWithProvider
         redirect301 $ appBase settings <> provider
     get wildcard $ \path -> do
-        settings <- getState
-        req <- request
-        provider <- runSQL $ getProvider req
+        (settings, provider) <- settingsWithProvider
         mredirection <- runSQL $ selectFirst [RedirectOriginalPath ==. path, RedirectProvider ==. provider] []
         case mredirection of
              Nothing -> redirect301 $ appBase settings
