@@ -55,6 +55,7 @@ Redirect
   destinationPath Text
 |]
 
+
 runSQL :: (HasSpock m, SpockConn m ~ SqlBackend) => SqlPersistT (LoggingT IO) a -> m a
 runSQL action = runQuery $ \conn -> runStdoutLoggingT $ runSqlConn action conn
 
@@ -76,8 +77,7 @@ redirect301 :: MonadIO m => Text -> ActionT m ()
 redirect301 url = do
     setStatus status301
     setHeader "Location" url
-    text url
-
+    html $ "<html><body>You are being <a src=\"" <> url <> "\">redirected</a>.</body></html>"
 
 main :: IO ()
 main = do
