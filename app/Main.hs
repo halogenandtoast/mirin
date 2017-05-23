@@ -53,6 +53,7 @@ Site
 Redirect
   originalPath Text
   destinationPath Text
+  provider Text
 |]
 
 
@@ -99,7 +100,9 @@ app = do
         redirect301 $ appBase settings <> provider
     get wildcard $ \path -> do
         settings <- getState
-        mredirection <- runSQL $ selectFirst [RedirectOriginalPath ==. path] []
+        req <- request
+        provider <- runSQL $ getProvider req
+        mredirection <- runSQL $ selectFirst [RedirectOriginalPath ==. path, RedirectProvider ==. provider] []
         case mredirection of
              Nothing -> redirect301 $ appBase settings
              Just (Entity _ redirection) -> redirect301 $ appBase settings <> redirectDestinationPath redirection
