@@ -14,9 +14,7 @@ module Main where
 
 import Web.Spock
 import Web.Spock.Config
-import System.Environment (lookupEnv)
 import Network.Wai.Internal (Request, requestHeaderHost)
-import Data.ByteString (ByteString)
 import Data.Maybe (fromMaybe)
 import Data.Monoid ((<>))
 import Data.Yaml.Config (loadYamlSettings, useEnv)
@@ -30,7 +28,6 @@ import Control.Monad.IO.Class (liftIO)
 import Data.Text.Encoding (decodeUtf8)
 import Data.Text (Text)
 import Data.Aeson
-import Network.URI
 
 type DB = ReaderT SqlBackend (LoggingT IO)
 
@@ -49,11 +46,10 @@ instance FromJSON AppSettings where
 
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Site json
+Site
   url Text
   provider Text
-  deriving Show
-Redirect json
+Redirect
   originalPath Text
   destinationPath Text
 |]

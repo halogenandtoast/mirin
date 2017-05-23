@@ -22,7 +22,6 @@ executable mirin
                      , mtl
                      , text
                      , wai
-                     , bytestring
                      , persistent
                      , persistent-mysql
                      , persistent-template
@@ -30,4 +29,3 @@ executable mirin
                      , transformers
                      , yaml
                      , aeson
-                     , network-uri
