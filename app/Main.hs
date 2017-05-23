@@ -24,10 +24,11 @@ import Database.Persist.MySQL hiding (get)
 import Control.Monad.Logger (LoggingT, runStdoutLoggingT)
 import Control.Monad.Trans.Reader (ReaderT)
 import Control.Monad.Trans.Maybe (MaybeT(..), runMaybeT)
-import Control.Monad.IO.Class (liftIO)
+import Control.Monad.IO.Class (liftIO, MonadIO)
 import Data.Text.Encoding (decodeUtf8)
 import Data.Text (Text)
 import Data.Aeson
+import Network.HTTP.Types.Status (status301)
 
 type DB = ReaderT SqlBackend (LoggingT IO)
 
@@ -71,6 +72,13 @@ getProvider req = do
     return $ fromMaybe "" res
 
 
+redirect301 :: MonadIO m => Text -> ActionT m ()
+redirect301 url = do
+    setStatus status301
+    setHeader "Location" url
+    text url
+
+
 main :: IO ()
 main = do
     settings <- liftIO $ loadYamlSettings ["settings.yaml"] [] useEnv
@@ -88,10 +96,10 @@ app = do
         settings <- getState
         req <- request
         provider <- runSQL $ getProvider req
-        redirect $ appBase settings <> provider
+        redirect301 $ appBase settings <> provider
     get wildcard $ \path -> do
         settings <- getState
         mredirection <- runSQL $ selectFirst [RedirectOriginalPath ==. path] []
         case mredirection of
-             Nothing -> redirect $ appBase settings
-             Just (Entity _ redirection) -> redirect $ appBase settings <> redirectDestinationPath redirection
+             Nothing -> redirect301 $ appBase settings
+             Just (Entity _ redirection) -> redirect301 $ appBase settings <> redirectDestinationPath redirection
