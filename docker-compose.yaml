@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mysql:
+    image: "mysql:5.6"
+    environment:
+      MYSQL_DATABASE: mirin
+      MYSQL_USER: mirin
+      MYSQL_PASSWORD: mirin
+      MYSQL_ROOT_PASSWORD: mirin
+    ports:
+      - 3306
+    volumes:
+      # mount ./docker/mysql with read only mode
+      - ./docker/mysql:/etc/mysql/conf.d/:ro
+  app:
+    build:
+     context: .
+     dockerfile: ./Dockerfile
+    environment:
+      PORT: '3000'
+      MSUSER: mirin
+      MSPASS: mirin
+      MSHOST: mysql
+      MSPORT: 3306
+      MSPOOLSIZE: 5
+      MSDATABASE: mirin
+    ports:
+      - "3000:3000"
+    links:
+      - mysql
