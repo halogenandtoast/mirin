@@ -1,3 +1,4 @@
 #!/bin/sh
 
+echo "create database mirin" | mysql -uroot
 stack build

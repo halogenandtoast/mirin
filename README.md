@@ -4,10 +4,20 @@ A tiny redirection server using Spock backed by MySQL
 
 ## Setup
 
-Install Stack: [Instructions](https://docs.haskellstack.org/en/stable/README/)
+* Install MySQL
+* Install Stack: [Instructions](https://docs.haskellstack.org/en/stable/README/)
+* Install OpenSSL: (e.g. `brew install openssl`)
+* Run setup: `bin/setup`
 
-Run setup:
+## Running
 
-```
-bin/setup
-```
+* Build the app: `stack build`
+* Run the server: `stack exec mirin`
+
+
+## Docker
+
+You can use `docker-compose`:
+
+* docker-compose build
+* docker-compose up app
